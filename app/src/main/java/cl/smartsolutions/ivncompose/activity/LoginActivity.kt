@@ -11,6 +11,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,6 +25,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -54,12 +57,18 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                 var password by remember { mutableStateOf("") }
                 val isLoginEnabled = email.isNotEmpty() && password.isNotEmpty()
 
+                val gradientColors = listOf(
+                    Color(0xFFFFFFFF),
+                    Color(0xFF00BCD4)
+                )
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                        .background(Brush.verticalGradient(gradientColors))
+                    ,
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
                         painter = painterResource(R.drawable.logo),
@@ -82,7 +91,9 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                         onValueChange = { email = it },
                         label = { Text("Email") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors()
                     )
 
@@ -93,7 +104,9 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                         onValueChange = { password = it },
                         label = { Text("Password") },
                         visualTransformation = PasswordVisualTransformation(),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors()
                     )
 
@@ -110,7 +123,9 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                             }
                         },
                         enabled = isLoginEnabled,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
