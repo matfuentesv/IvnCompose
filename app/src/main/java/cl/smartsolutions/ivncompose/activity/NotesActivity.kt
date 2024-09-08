@@ -12,6 +12,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -23,12 +24,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cl.smartsolutions.ivnapp.model.Note
-import cl.smartsolutions.ivncompose.R
 
 import cl.smartsolutions.ivncompose.ui.theme.IvnComposeTheme
 import java.util.*
@@ -62,7 +64,19 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             add(Note("Saludo", "Hola, ¿cómo estás?"))
             add(Note("Pedido de ayuda", "¿Podrías ayudarme, por favor?"))
             add(Note("Pregunta por dirección", "¿Dónde está el baño?"))
-            // Agregar más notas...
+            add(Note("Pedido de información", "¿Puedes escribir lo que estás diciendo?"))
+            add(Note("Explicación de sordera", "Soy sordo/a, no puedo escuchar. Por favor, lee mi mensaje."))
+            add(Note("Pedido de bebida", "Me gustaría un vaso de agua, por favor."))
+            add(Note("Gracias", "Muchas gracias por tu ayuda."))
+            add(Note("Llamar la atención", "Disculpa, ¿puedes mirarme un momento?"))
+            add(Note("Comunicación alternativa", "¿Podemos comunicarnos por escrito?"))
+            add(Note("Pedido de comida", "Quisiera pedir una hamburguesa sin queso, por favor."))
+            add(Note("Confirmación", "Sí, entiendo."))
+            add(Note("Negación", "No, no necesito ayuda, gracias."))
+            add(Note("Llamada de emergencia", "Por favor, llama al 133, hay una emergencia."))
+            add(Note("Despedida", "Adiós, que tengas un buen día."))
+            add(Note("Pregunta por tiempo", "¿Qué hora es?"))
+
         }
     }
 
@@ -91,8 +105,16 @@ fun NotesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Inclusive Voice Notes App", textAlign = TextAlign.Center) },
-                modifier = Modifier.statusBarsPadding(), // Respeta la barra de estado
+                title = {
+                    Text(
+                        text = "Inclusive Voice Notes App",
+                        textAlign = TextAlign.Center,
+                        color = Color.White
+                    )
+                },
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .background(Color(0xFF030A25)),
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF030A25),
                     titleContentColor = Color.White
@@ -103,12 +125,13 @@ fun NotesScreen(
             FloatingActionButton(
                 onClick = onAddNote,
                 contentColor = Color.White,
-                containerColor = Color(0xFF2196F3),
+                containerColor = Color(0xFF009688),
                 modifier = Modifier
-                    .size(56.dp)
-                    .clip(RoundedCornerShape(16.dp))
+                    .size(120.dp)
+                    .padding(16.dp)
+                    .semantics { contentDescription = "Agregar nueva nota" }  // Añadir descripción accesible
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Note")
+                Icon(imageVector = Icons.Default.Add, contentDescription = null)
             }
         },
         content = { paddingValues ->
@@ -118,7 +141,7 @@ fun NotesScreen(
                     .padding(paddingValues)
                     .background(
                         brush = Brush.verticalGradient(
-                            colors = listOf( Color(0xFFFFFFFF),
+                        colors = listOf( Color(0xFFFFFFFF),
                                 Color(0xFF030A25))
                         )
                     ),
@@ -160,9 +183,10 @@ fun NoteCard(note: Note, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .clip(RoundedCornerShape(12.dp))
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
+            .semantics { contentDescription = "Nota: ${note.title}" },  // Descripción accesible para cada tarjeta
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF03A9F4)
+            containerColor = Color(0xFF0F6186)  // Mantener el color de las tarjetas
         ),
         elevation = CardDefaults.cardElevation(6.dp)
     ) {
@@ -194,8 +218,23 @@ fun NotesScreenPreview() {
         NotesScreen(
             notesList = listOf(
                 Note("Saludo", "Hola, ¿cómo estás?"),
-                Note("Pedido de ayuda", "¿Podrías ayudarme, por favor?")
-            ),
+                Note("Pedido de ayuda", "¿Podrías ayudarme, por favor?"),
+                Note("Saludo", "Hola, ¿cómo estás?"),
+                Note("Pedido de ayuda", "¿Podrías ayudarme, por favor?"),
+                Note("Pregunta por dirección", "¿Dónde está el baño?"),
+                Note("Pedido de información", "¿Puedes escribir lo que estás diciendo?"),
+                Note("Explicación de sordera", "Soy sordo/a, no puedo escuchar. Por favor, lee mi mensaje."),
+                Note("Pedido de bebida", "Me gustaría un vaso de agua, por favor."),
+                Note("Gracias", "Muchas gracias por tu ayuda."),
+                Note("Llamar la atención", "Disculpa, ¿puedes mirarme un momento?"),
+                Note("Comunicación alternativa", "¿Podemos comunicarnos por escrito?"),
+                Note("Pedido de comida", "Quisiera pedir una hamburguesa sin queso, por favor."),
+                Note("Confirmación", "Sí, entiendo."),
+                Note("Negación", "No, no necesito ayuda, gracias."),
+                Note("Llamada de emergencia", "Por favor, llama al 133, hay una emergencia."),
+                Note("Despedida", "Adiós, que tengas un buen día."),
+                Note("Pregunta por tiempo", "¿Qué hora es?"),
+        ),
             onAddNote = {},
             onReadNote = {}
         )
