@@ -149,7 +149,7 @@ fun RecoverPasswordScreen(
                 val user = UserRepository.validateUserByEmail(email)
                 if (user != null) {
                     Toast.makeText(contexto, "Contraseña enviada a: " + user.getEmail(), Toast.LENGTH_SHORT).show()
-                    showLoginErrorFeedback("Por favor revisa tu email")
+                    showLoginErrorFeedback("Por favor ${user.getFirstName()} revisa tu email")
                 } else {
                     showLoginErrorFeedback("No se pudo encontrar el email")
                 }

@@ -8,13 +8,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -58,11 +56,15 @@ fun RegisterScreen(
     var email by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val isFormValid = name.isNotBlank() && lastName.isNotBlank() && email.isNotBlank() && age.isNotBlank() && password.isNotBlank()
+
     val context = LocalContext.current
     val gradientColors = listOf(
         Color(0xFFFFFFFF),
         Color(0xFF030A25)
     )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -77,8 +79,7 @@ fun RegisterScreen(
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
             horizontalArrangement = Arrangement.Start
-        )
-        {
+        ) {
             Image(
                 painter = painterResource(R.drawable.ic_back_arrow),
                 contentDescription = "Volver",
@@ -88,11 +89,13 @@ fun RegisterScreen(
                     .clickable { onBackPressed() }
             )
         }
+
         Image(
             painter = painterResource(R.drawable.logo),
             contentDescription = null,
             modifier = Modifier.size(100.dp)
         )
+
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -100,60 +103,75 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
-            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.Black,
+                unfocusedBorderColor = Color.Black
+            )
         )
 
         OutlinedTextField(
             value = lastName,
             onValueChange = { lastName = it },
-            label = { Text("Apellido",color = Color.Black) },
+            label = { Text("Apellido", color = Color.Black) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
-            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
-
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.Black,
+                unfocusedBorderColor = Color.Black
+            )
         )
 
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email",color = Color.Black) },
+            label = { Text("Email", color = Color.Black) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Email
             ),
-            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.Black,
+                unfocusedBorderColor = Color.Black
+            )
         )
 
         OutlinedTextField(
             value = age,
             onValueChange = { age = it },
-            label = { Text("Edad",color = Color.Black) },
+            label = { Text("Edad", color = Color.Black) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number
             ),
-            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.Black,
+                unfocusedBorderColor = Color.Black
+            )
         )
 
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Contraseña",color = Color.Black) },
+            label = { Text("Contraseña", color = Color.Black) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Password
             ),
-            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.Black,
+                unfocusedBorderColor = Color.Black
+            )
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             onClick = {
                 if (UserRepository.getUsers().size < 5) {
@@ -172,9 +190,18 @@ fun RegisterScreen(
                     Toast.makeText(context, "No se pueden crear más usuarios", Toast.LENGTH_LONG).show()
                 }
             },
+            enabled = isFormValid,  // El botón solo se habilita si el formulario es válido
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "REGISTRAR", fontSize = 16.sp)
+        }
+
+        if (!isFormValid) {
+            Text(
+                text = "Por favor, complete todos los campos.",
+                color = Color.Red,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }
