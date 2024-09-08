@@ -138,7 +138,7 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "¿OLVIDASTE TU CONTRASEÑA?",
+                        text = "¿Olvidaste tu contraseña?",
                         modifier = Modifier.clickable {
                             startActivity(Intent(this@LoginActivity, RecoverPasswordActivity::class.java))
                         },
@@ -149,7 +149,7 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "¿NO TIENES UNA CUENTA? REGÍSTRATE",
+                        text = "¿No tienes una cuenta? regístrate",
                         modifier = Modifier.clickable {
                             startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
                         },

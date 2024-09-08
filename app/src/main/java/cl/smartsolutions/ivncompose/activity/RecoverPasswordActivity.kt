@@ -136,10 +136,10 @@ fun RecoverPasswordScreen(
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
+            label = { Text("Email",color = Color.Black) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors()
+            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
