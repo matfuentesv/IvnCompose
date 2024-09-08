@@ -8,12 +8,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +48,7 @@ class RegisterActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
     onBackPressed: () -> Unit
@@ -56,7 +61,7 @@ fun RegisterScreen(
     val context = LocalContext.current
     val gradientColors = listOf(
         Color(0xFFFFFFFF),
-        Color(0xFF00BCD4)
+        Color(0xFF030A25)
     )
     Column(
         modifier = Modifier
@@ -88,65 +93,67 @@ fun RegisterScreen(
             contentDescription = null,
             modifier = Modifier.size(100.dp)
         )
-
-        // Campos de texto
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            label = { Text("Nombre") },
+            label = { Text("Nombre", color = Color.Black) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp)
+                .padding(vertical = 4.dp),
+            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
         )
 
         OutlinedTextField(
             value = lastName,
             onValueChange = { lastName = it },
-            label = { Text("Apellido") },
+            label = { Text("Apellido",color = Color.Black) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp)
+                .padding(vertical = 4.dp),
+            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
+
         )
 
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
+            label = { Text("Email",color = Color.Black) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Email
-            )
+            ),
+            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
         )
 
         OutlinedTextField(
             value = age,
             onValueChange = { age = it },
-            label = { Text("Edad") },
+            label = { Text("Edad",color = Color.Black) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number
-            )
+            ),
+            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
         )
 
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Contraseña") },
+            label = { Text("Contraseña",color = Color.Black) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Password
-            )
+            ),
+            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        // Botón de registro
         Button(
             onClick = {
                 if (UserRepository.getUsers().size < 5) {
@@ -167,7 +174,7 @@ fun RegisterScreen(
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Guardar registro", fontSize = 16.sp)
+            Text(text = "REGISTRAR", fontSize = 16.sp)
         }
     }
 }

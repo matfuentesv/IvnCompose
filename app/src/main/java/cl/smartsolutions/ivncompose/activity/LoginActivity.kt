@@ -59,7 +59,7 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
 
                 val gradientColors = listOf(
                     Color(0xFFFFFFFF),
-                    Color(0xFF00BCD4)
+                    Color(0xFF030A25)
                 )
 
                 Column(
@@ -89,12 +89,12 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text("Email") },
+                        label = { Text("Email",color = Color.Black) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors()
+                        colors = TextFieldDefaults.colors(Color.Black,Color.Black)
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -102,13 +102,13 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text("Password") },
+                        label = { Text("Password",color = Color.Black) },
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier
                             .fillMaxWidth()
 
                             .padding(horizontal = 16.dp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors()
+                        colors = TextFieldDefaults.colors(Color.Black,Color.Black)
                     )
 
                     Spacer(modifier = Modifier.height(32.dp))
@@ -138,22 +138,22 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "¿Olvidaste tu contraseña?",
+                        text = "¿OLVIDASTE TU CONTRASEÑA?",
                         modifier = Modifier.clickable {
                             startActivity(Intent(this@LoginActivity, RecoverPasswordActivity::class.java))
                         },
-                        color = Color.Black,
+                        color = Color.White,
                         fontSize = 18.sp
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "¿No tienes una cuenta? Regístrate",
+                        text = "¿NO TIENES UNA CUENTA? REGÍSTRATE",
                         modifier = Modifier.clickable {
                             startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
                         },
-                        color = Color.Black,
+                        color = Color.White,
                         fontSize = 18.sp
                     )
                 }

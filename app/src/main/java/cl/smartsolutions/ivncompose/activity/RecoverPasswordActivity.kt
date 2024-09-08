@@ -92,7 +92,7 @@ fun RecoverPasswordScreen(
     val contexto = LocalContext.current
     val gradientColors = listOf(
         Color(0xFFFFFFFF),
-        Color(0xFF00BCD4)
+        Color(0xFF030A25)
     )
     Column(
         modifier = Modifier
