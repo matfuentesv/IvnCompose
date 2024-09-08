@@ -103,10 +103,7 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Black,
-                unfocusedBorderColor = Color.Black
-            )
+            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
         )
 
         OutlinedTextField(
@@ -116,10 +113,7 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Black,
-                unfocusedBorderColor = Color.Black
-            )
+            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
         )
 
         OutlinedTextField(
@@ -132,10 +126,7 @@ fun RegisterScreen(
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Email
             ),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Black,
-                unfocusedBorderColor = Color.Black
-            )
+            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
         )
 
         OutlinedTextField(
@@ -148,10 +139,7 @@ fun RegisterScreen(
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number
             ),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Black,
-                unfocusedBorderColor = Color.Black
-            )
+            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
         )
 
         OutlinedTextField(
@@ -164,10 +152,7 @@ fun RegisterScreen(
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Password
             ),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Black,
-                unfocusedBorderColor = Color.Black
-            )
+            colors = TextFieldDefaults.colors(Color.Black,Color.Black)
         )
 
         Spacer(modifier = Modifier.height(16.dp))

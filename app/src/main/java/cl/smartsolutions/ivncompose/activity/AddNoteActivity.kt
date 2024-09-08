@@ -105,10 +105,7 @@ fun AddNoteScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Color.Black,
-                            unfocusedBorderColor = Color.Black
-                        )
+                        colors = TextFieldDefaults.colors(Color.Black,Color.Black)
                     )
 
                     OutlinedTextField(
@@ -121,10 +118,7 @@ fun AddNoteScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Color.Black,
-                            unfocusedBorderColor = Color.Black
-                        )
+                        colors = TextFieldDefaults.colors(Color.Black,Color.Black)
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
