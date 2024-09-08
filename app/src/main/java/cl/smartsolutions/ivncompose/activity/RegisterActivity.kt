@@ -1,4 +1,4 @@
-package cl.smartsolutions.ivncompose
+package cl.smartsolutions.ivncompose.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,22 +11,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import cl.smartsolutions.ivncompose.ui.theme.IvnComposeTheme
+import cl.smartsolutions.ivncompose.activity.ui.theme.IvnComposeTheme
 
-class MainActivity : ComponentActivity() {
+class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             IvnComposeTheme {
-                Greeting(name = "Hola")
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    Greeting4(
+                        name = "Android",
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Greeting4(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
         modifier = modifier
@@ -35,8 +40,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun GreetingPreview4() {
     IvnComposeTheme {
-        Greeting("Android")
+        Greeting4("Android")
     }
 }
