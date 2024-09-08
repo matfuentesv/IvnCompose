@@ -106,6 +106,7 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier
                             .fillMaxWidth()
+
                             .padding(horizontal = 16.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors()
                     )
@@ -141,7 +142,7 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                         modifier = Modifier.clickable {
                             startActivity(Intent(this@LoginActivity, RecoverPasswordActivity::class.java))
                         },
-                        color = MaterialTheme.colorScheme.primary,
+                        color = Color.Black,
                         fontSize = 18.sp
                     )
 
@@ -152,7 +153,7 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                         modifier = Modifier.clickable {
                             startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
                         },
-                        color = MaterialTheme.colorScheme.primary,
+                        color = Color.Black,
                         fontSize = 18.sp
                     )
                 }
