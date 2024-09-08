@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,8 +23,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
@@ -78,7 +82,6 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             add(Note("Llamada de emergencia", "Por favor, llama al 133, hay una emergencia."))
             add(Note("Despedida", "Adiós, que tengas un buen día."))
             add(Note("Pregunta por tiempo", "¿Qué hora es?"))
-
         }
     }
 
@@ -104,7 +107,6 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun translateToEnglish(content: String): String {
-
         return when (content) {
             "Hola, ¿cómo estás?" -> "Hello, how are you?"
             "¿Podrías ayudarme, por favor?" -> "Could you help me, please?"
@@ -124,7 +126,6 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             else -> content
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
@@ -225,14 +226,55 @@ fun NoteCard(note: Note, onReadNote: (Note, Locale) -> Unit) {
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
-            IconButton(onClick = { onReadNote(note, Locale("es", "ES")) }) {
-                Icon(painter = painterResource(id = R.drawable.ic_back_arrow), contentDescription = "Español")
-            }
-            IconButton(onClick = { onReadNote(note, Locale("en", "GB")) }) {
-                Icon(painter = painterResource(id = R.drawable.spain), contentDescription = "English")
-            }
+
+            AnimatedFlagButton(
+                painterResource(id = R.drawable.spain),
+                "Español",
+                Locale("es", "ES"),
+                onReadNote = onReadNote,
+                note = note
+            )
+
+            AnimatedFlagButton(
+                painterResource(id = R.drawable.reino_unido),
+                "English",
+                Locale("en", "GB"),
+                onReadNote = onReadNote,
+                note = note
+            )
         }
     }
+}
+
+@Composable
+fun AnimatedFlagButton(
+    painter: Painter,
+    contentDescription: String,
+    locale: Locale,
+    onReadNote: (Note, Locale) -> Unit,
+    note: Note
+) {
+
+    var scale by remember { mutableStateOf(1f) }
+
+
+    LaunchedEffect(scale) {
+        scale = 1f
+    }
+
+
+    Image(
+        painter = painter,
+        contentDescription = contentDescription,
+        modifier = Modifier
+            .size(40.dp)
+            .scale(scale)
+            .shadow(8.dp, CircleShape)
+            .clickable {
+                scale = 0.9f
+                onReadNote(note, locale)
+            }
+    )
 }
 
 @Preview(showBackground = true)
