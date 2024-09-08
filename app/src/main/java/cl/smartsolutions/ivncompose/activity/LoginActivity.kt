@@ -114,7 +114,6 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                         onClick = {
                             val user = UserRepository.validateUserByEmail(email)
                             if (user != null && user.getPassword() == password) {
-                                // Pasar el usuario logueado a NotesActivity
                                 val intent = Intent(this@LoginActivity, NotesActivity::class.java)
                                 intent.putExtra("loggedInUser", user.getFirstName())
                                 startActivity(intent)

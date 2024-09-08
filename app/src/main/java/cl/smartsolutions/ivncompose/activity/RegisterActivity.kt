@@ -175,7 +175,7 @@ fun RegisterScreen(
                     Toast.makeText(context, "No se pueden crear más usuarios", Toast.LENGTH_LONG).show()
                 }
             },
-            enabled = isFormValid,  // El botón solo se habilita si el formulario es válido
+            enabled = isFormValid,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "REGISTRAR", fontSize = 16.sp)

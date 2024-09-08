@@ -55,8 +55,6 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        // Obtener el nombre del usuario logueado desde el Intent
         loggedInUser = intent.getStringExtra("loggedInUser") ?: "Usuario"
 
         textToSpeech = TextToSpeech(this, this)
@@ -76,7 +74,6 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         loadNotes()
     }
 
-    // Método para recibir la nota nueva desde AddNoteActivity
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ADD_NOTE_REQUEST_CODE && resultCode == RESULT_OK) {
@@ -302,8 +299,8 @@ fun AnimatedFlagButton(
             .shadow(8.dp, CircleShape)
             .clickable {
                 coroutineScope.launch {
-                    scale.animateTo(0.9f) // Reducir la escala
-                    scale.animateTo(1f) // Volver a la escala original
+                    scale.animateTo(0.9f)
+                    scale.animateTo(1f)
                 }
                 onReadNote(note, locale)
             }

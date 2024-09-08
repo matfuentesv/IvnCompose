@@ -33,7 +33,6 @@ class AddNoteActivity : ComponentActivity() {
             IvnComposeTheme {
                 AddNoteScreen(
                     onSaveNote = { note ->
-                        // Devuelve la nota a NotesActivity
                         val resultIntent = Intent().apply {
                             putExtra("noteTitle", note.title)
                             putExtra("noteContent", note.content)
@@ -56,8 +55,6 @@ fun AddNoteScreen(
 ) {
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
-
-    // El botón estará habilitado solo si ambos campos están completos
     val isFormValid = title.isNotBlank() && content.isNotBlank()
 
     Scaffold(
@@ -130,7 +127,7 @@ fun AddNoteScreen(
                                 onSaveNote(note)
                             }
                         },
-                        enabled = isFormValid, // Habilita el botón solo si el formulario es válido
+                        enabled = isFormValid,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
