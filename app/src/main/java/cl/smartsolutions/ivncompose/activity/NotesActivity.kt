@@ -12,6 +12,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cl.smartsolutions.ivnapp.model.Note
-
+import cl.smartsolutions.ivncompose.R
 import cl.smartsolutions.ivncompose.ui.theme.IvnComposeTheme
 import java.util.*
 
@@ -51,7 +53,7 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                 NotesScreen(
                     notesList = notesList,
                     onAddNote = { startActivity(Intent(this, AddNoteActivity::class.java)) },
-                    onReadNote = { note -> readNoteContent(note) }
+                    onReadNote = { note, locale -> readNoteContent(note, locale) }
                 )
             }
         }
@@ -60,10 +62,8 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun loadNotes() {
+        // Cargar las notas
         notesList.apply {
-            add(Note("Saludo", "Hola, ¿cómo estás?"))
-            add(Note("Pedido de ayuda", "¿Podrías ayudarme, por favor?"))
-            add(Note("Pregunta por dirección", "¿Dónde está el baño?"))
             add(Note("Pedido de información", "¿Puedes escribir lo que estás diciendo?"))
             add(Note("Explicación de sordera", "Soy sordo/a, no puedo escuchar. Por favor, lee mi mensaje."))
             add(Note("Pedido de bebida", "Me gustaría un vaso de agua, por favor."))
@@ -90,8 +90,26 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         }
     }
 
-    private fun readNoteContent(note: Note) {
-        textToSpeech.speak(note.content, TextToSpeech.QUEUE_FLUSH, null, null)
+    private fun readNoteContent(note: Note, locale: Locale) {
+        val translatedContent = if (locale.language == "en") {
+            translateToEnglish(note.content)
+        } else {
+            note.content
+        }
+
+        textToSpeech.language = locale
+        textToSpeech.speak(translatedContent, TextToSpeech.QUEUE_FLUSH, null, null)
+    }
+
+    private fun translateToEnglish(content: String): String {
+        // Aquí puedes añadir una lógica de traducción básica.
+        // Esto es solo un ejemplo; en un caso real podrías usar una API de traducción.
+        return when (content) {
+            "Hola, ¿cómo estás?" -> "Hello, how are you?"
+            "¿Podrías ayudarme, por favor?" -> "Could you help me, please?"
+            "¿Dónde está el baño?" -> "Where is the bathroom?"
+            else -> content // Si no hay traducción, mantener el texto original.
+        }
     }
 }
 
@@ -100,7 +118,7 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
 fun NotesScreen(
     notesList: List<Note>,
     onAddNote: () -> Unit,
-    onReadNote: (Note) -> Unit
+    onReadNote: (Note, Locale) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -129,7 +147,7 @@ fun NotesScreen(
                 modifier = Modifier
                     .size(120.dp)
                     .padding(16.dp)
-                    .semantics { contentDescription = "Agregar nueva nota" }  // Añadir descripción accesible
+                    .semantics { contentDescription = "Agregar nueva nota" }
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
             }
@@ -141,8 +159,7 @@ fun NotesScreen(
                     .padding(paddingValues)
                     .background(
                         brush = Brush.verticalGradient(
-                        colors = listOf( Color(0xFFFFFFFF),
-                                Color(0xFF030A25))
+                            colors = listOf(Color(0xFFFFFFFF), Color(0xFF030A25))
                         )
                     ),
                 contentAlignment = Alignment.Center
@@ -156,18 +173,12 @@ fun NotesScreen(
                     )
                 } else {
                     LazyColumn(
-                        contentPadding = paddingValues,
+                        contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        items(notesList.size) { index ->
-                            AnimatedVisibility(
-                                visible = true,
-                                enter = slideInHorizontally() + fadeIn(),
-                                exit = slideOutHorizontally() + fadeOut()
-                            ) {
-                                NoteCard(note = notesList[index], onClick = { onReadNote(notesList[index]) })
-                            }
+                        items(notesList) { note ->
+                            NoteCard(note = note, onReadNote = onReadNote)
                         }
                     }
                 }
@@ -177,36 +188,35 @@ fun NotesScreen(
 }
 
 @Composable
-fun NoteCard(note: Note, onClick: () -> Unit) {
+fun NoteCard(note: Note, onReadNote: (Note, Locale) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
             .clip(RoundedCornerShape(12.dp))
-            .clickable(onClick = onClick)
-            .semantics { contentDescription = "Nota: ${note.title}" },  // Descripción accesible para cada tarjeta
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF0F6186)  // Mantener el color de las tarjetas
-        ),
+            .clickable { },
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF0F6186)),
         elevation = CardDefaults.cardElevation(6.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Top
-        ) {
-            Text(
-                text = note.title,
-                color = Color.White,
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                text = note.content,
-                color = Color.White,
-                style = MaterialTheme.typography.bodyMedium
-            )
+        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = note.title,
+                    color = Color.White,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = note.content,
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            IconButton(onClick = { onReadNote(note, Locale("es", "ES")) }) {
+                Icon(painter = painterResource(id = R.drawable.ic_back_arrow), contentDescription = "Español")
+            }
+            IconButton(onClick = { onReadNote(note, Locale("en", "GB")) }) {
+                Icon(painter = painterResource(id = R.drawable.ic_back_arrow), contentDescription = "English")
+            }
         }
     }
 }
@@ -218,25 +228,10 @@ fun NotesScreenPreview() {
         NotesScreen(
             notesList = listOf(
                 Note("Saludo", "Hola, ¿cómo estás?"),
-                Note("Pedido de ayuda", "¿Podrías ayudarme, por favor?"),
-                Note("Saludo", "Hola, ¿cómo estás?"),
-                Note("Pedido de ayuda", "¿Podrías ayudarme, por favor?"),
-                Note("Pregunta por dirección", "¿Dónde está el baño?"),
-                Note("Pedido de información", "¿Puedes escribir lo que estás diciendo?"),
-                Note("Explicación de sordera", "Soy sordo/a, no puedo escuchar. Por favor, lee mi mensaje."),
-                Note("Pedido de bebida", "Me gustaría un vaso de agua, por favor."),
-                Note("Gracias", "Muchas gracias por tu ayuda."),
-                Note("Llamar la atención", "Disculpa, ¿puedes mirarme un momento?"),
-                Note("Comunicación alternativa", "¿Podemos comunicarnos por escrito?"),
-                Note("Pedido de comida", "Quisiera pedir una hamburguesa sin queso, por favor."),
-                Note("Confirmación", "Sí, entiendo."),
-                Note("Negación", "No, no necesito ayuda, gracias."),
-                Note("Llamada de emergencia", "Por favor, llama al 133, hay una emergencia."),
-                Note("Despedida", "Adiós, que tengas un buen día."),
-                Note("Pregunta por tiempo", "¿Qué hora es?"),
-        ),
+                Note("Pedido de ayuda", "¿Podrías ayudarme, por favor?")
+            ),
             onAddNote = {},
-            onReadNote = {}
+            onReadNote = { _, _ -> }
         )
     }
 }
