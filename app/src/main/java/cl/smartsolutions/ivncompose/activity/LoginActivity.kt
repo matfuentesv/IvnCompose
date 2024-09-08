@@ -116,7 +116,7 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                             contentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     ) {
-                        Text(text = "Login")
+                        Text(text = "LOGIN")
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
