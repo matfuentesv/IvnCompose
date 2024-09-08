@@ -57,6 +57,9 @@ fun AddNoteScreen(
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
 
+    // El botón estará habilitado solo si ambos campos están completos
+    val isFormValid = title.isNotBlank() && content.isNotBlank()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -65,6 +68,7 @@ fun AddNoteScreen(
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Volver",
+                        tint = Color.White,
                         modifier = Modifier
                             .clickable(onClick = onBackPressed)
                             .padding(16.dp),
@@ -127,19 +131,25 @@ fun AddNoteScreen(
 
                     Button(
                         onClick = {
-                            if (title.isNotBlank() && content.isNotBlank()) {
+                            if (isFormValid) {
                                 val note = Note(title = title, content = content)
                                 onSaveNote(note)
-                            } else {
-                                // Muestra un mensaje de advertencia si los campos están vacíos
-                                onSaveNote(Note("Error", "Por favor complete todos los campos"))
                             }
                         },
+                        enabled = isFormValid, // Habilita el botón solo si el formulario es válido
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
                     ) {
                         Text(text = "Guardar Nota")
+                    }
+
+                    if (!isFormValid) {
+                        Text(
+                            text = "Por favor, complete todos los campos.",
+                            color = Color.Red,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
                     }
                 }
             }
