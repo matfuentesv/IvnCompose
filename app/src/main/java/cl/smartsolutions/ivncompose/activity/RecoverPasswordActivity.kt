@@ -104,12 +104,12 @@ fun RecoverPasswordScreen(
     ) {
 
         Image(
-            painter = painterResource(R.drawable.ic_back_arrow), // Reemplaza con tu drawable
+            painter = painterResource(R.drawable.ic_back_arrow),
             contentDescription = "Volver",
             modifier = Modifier
                 .size(65.dp)
                 .padding(start = 20.dp, top = 25.dp)
-                .align(Alignment.Start)  // Alinea la imagen a la izquierda del contenedor
+                .align(Alignment.Start)
                 .clickable { onBackPressed() }
         )
 
