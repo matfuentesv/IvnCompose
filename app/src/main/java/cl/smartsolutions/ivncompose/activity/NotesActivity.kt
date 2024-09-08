@@ -62,8 +62,10 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun loadNotes() {
-        // Cargar las notas
         notesList.apply {
+            add(Note("Saludo", "Hola, ¿cómo estás?"))
+            add(Note("Pedido de ayuda", "¿Podrías ayudarme, por favor?"))
+            add(Note("Pregunta por dirección", "¿Dónde está el baño?"))
             add(Note("Pedido de información", "¿Puedes escribir lo que estás diciendo?"))
             add(Note("Explicación de sordera", "Soy sordo/a, no puedo escuchar. Por favor, lee mi mensaje."))
             add(Note("Pedido de bebida", "Me gustaría un vaso de agua, por favor."))
@@ -102,15 +104,27 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun translateToEnglish(content: String): String {
-        // Aquí puedes añadir una lógica de traducción básica.
-        // Esto es solo un ejemplo; en un caso real podrías usar una API de traducción.
+
         return when (content) {
             "Hola, ¿cómo estás?" -> "Hello, how are you?"
             "¿Podrías ayudarme, por favor?" -> "Could you help me, please?"
             "¿Dónde está el baño?" -> "Where is the bathroom?"
-            else -> content // Si no hay traducción, mantener el texto original.
+            "¿Puedes escribir lo que estás diciendo?" -> "Can you write what you're saying?"
+            "Soy sordo/a, no puedo escuchar. Por favor, lee mi mensaje." -> "I am deaf, I can't hear. Please read my message."
+            "Me gustaría un vaso de agua, por favor." -> "I would like a glass of water, please."
+            "Muchas gracias por tu ayuda." -> "Thank you very much for your help."
+            "Disculpa, ¿puedes mirarme un momento?" -> "Excuse me, can you look at me for a moment?"
+            "¿Podemos comunicarnos por escrito?" -> "Can we communicate in writing?"
+            "Quisiera pedir una hamburguesa sin queso, por favor." -> "I would like to order a hamburger without cheese, please."
+            "Sí, entiendo." -> "Yes, I understand."
+            "No, no necesito ayuda, gracias." -> "No, I don't need help, thank you."
+            "Por favor, llama al 133, hay una emergencia." -> "Please call 133, there is an emergency."
+            "Adiós, que tengas un buen día." -> "Goodbye, have a nice day."
+            "¿Qué hora es?" -> "What time is it?"
+            else -> content
         }
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
@@ -215,7 +229,7 @@ fun NoteCard(note: Note, onReadNote: (Note, Locale) -> Unit) {
                 Icon(painter = painterResource(id = R.drawable.ic_back_arrow), contentDescription = "Español")
             }
             IconButton(onClick = { onReadNote(note, Locale("en", "GB")) }) {
-                Icon(painter = painterResource(id = R.drawable.ic_back_arrow), contentDescription = "English")
+                Icon(painter = painterResource(id = R.drawable.spain), contentDescription = "English")
             }
         }
     }
