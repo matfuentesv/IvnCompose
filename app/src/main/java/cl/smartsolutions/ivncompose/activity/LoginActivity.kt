@@ -61,12 +61,10 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                     Color(0xFFFFFFFF),
                     Color(0xFF030A25)
                 )
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Brush.verticalGradient(gradientColors))
-                    ,
+                        .background(Brush.verticalGradient(gradientColors)),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -89,12 +87,12 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text("Email",color = Color.Black) },
+                        label = { Text("Email", color = Color.Black) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
-                        colors = TextFieldDefaults.colors(Color.Black,Color.Black)
+                        colors = TextFieldDefaults.colors(Color.Black, Color.Black)
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -102,23 +100,25 @@ class LoginActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text("Password",color = Color.Black) },
+                        label = { Text("Password", color = Color.Black) },
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier
                             .fillMaxWidth()
-
                             .padding(horizontal = 16.dp),
-                        colors = TextFieldDefaults.colors(Color.Black,Color.Black)
+                        colors = TextFieldDefaults.colors(Color.Black, Color.Black)
                     )
 
                     Spacer(modifier = Modifier.height(32.dp))
 
                     Button(
                         onClick = {
-                            if (UserRepository.validateUser(email, password)) {
+                            val user = UserRepository.validateUserByEmail(email)
+                            if (user != null && user.getPassword() == password) {
+                                // Pasar el usuario logueado a NotesActivity
                                 val intent = Intent(this@LoginActivity, NotesActivity::class.java)
+                                intent.putExtra("loggedInUser", user.getFirstName())
                                 startActivity(intent)
-                                showLoginErrorFeedback("Usuario validado correctamente, bienvenido")
+                                showLoginErrorFeedback(" bienvenido ${user.getFirstName()}")
                             } else {
                                 showLoginErrorFeedback("Usuario y/o contraseña incorrecta")
                             }

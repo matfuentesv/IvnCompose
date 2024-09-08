@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.*
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,16 +39,21 @@ import androidx.compose.ui.unit.dp
 import cl.smartsolutions.ivnapp.model.Note
 import cl.smartsolutions.ivncompose.R
 import cl.smartsolutions.ivncompose.ui.theme.IvnComposeTheme
+import kotlinx.coroutines.launch
 import java.util.*
 
 class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var textToSpeech: TextToSpeech
+    private lateinit var loggedInUser: String
     private val notesList = mutableListOf<Note>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Obtener el nombre del usuario logueado desde el Intent
+        loggedInUser = intent.getStringExtra("loggedInUser") ?: "Usuario"
 
         textToSpeech = TextToSpeech(this, this)
 
@@ -57,7 +62,9 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                 NotesScreen(
                     notesList = notesList,
                     onAddNote = { startActivity(Intent(this, AddNoteActivity::class.java)) },
-                    onReadNote = { note, locale -> readNoteContent(note, locale) }
+                    onReadNote = { note, locale -> readNoteContent(note, locale) },
+                    loggedInUser = loggedInUser,
+                    onLogout = { logoutUser() }
                 )
             }
         }
@@ -83,6 +90,12 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             add(Note("Despedida", "Adiós, que tengas un buen día."))
             add(Note("Pregunta por tiempo", "¿Qué hora es?"))
         }
+    }
+
+    private fun logoutUser() {
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
     override fun onInit(status: Int) {
@@ -128,20 +141,31 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotesScreen(
     notesList: List<Note>,
     onAddNote: () -> Unit,
-    onReadNote: (Note, Locale) -> Unit
+    onReadNote: (Note, Locale) -> Unit,
+    loggedInUser: String,
+    onLogout: () -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Inclusive Voice Notes App",
+                        text = "Inclusive Voice Notes",
                         textAlign = TextAlign.Center,
+                        color = Color.White
+                    )
+                },
+                actions = {
+                    Text(
+                        text = "Cerrar sesión",
+                        modifier = Modifier
+                            .clickable(onClick = onLogout)
+                            .padding(16.dp),
                         color = Color.White
                     )
                 },
@@ -160,9 +184,8 @@ fun NotesScreen(
                 contentColor = Color.White,
                 containerColor = Color(0xFF009688),
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(100.dp)
                     .padding(16.dp)
-                    .semantics { contentDescription = "Agregar nueva nota" }
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
             }
@@ -172,23 +195,18 @@ fun NotesScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(Color(0xFFFFFFFF), Color(0xFF030A25))
-                        )
-                    ),
-                contentAlignment = Alignment.Center
+                    .background(Brush.verticalGradient(listOf(Color.White, Color(0xFF030A25)))),
+                contentAlignment = Alignment.TopCenter
             ) {
-                if (notesList.isEmpty()) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "No hay notas disponibles.",
-                        style = MaterialTheme.typography.bodyLarge,
+                        text = "Bienvenido, $loggedInUser",
                         fontWeight = FontWeight.Bold,
-                        color = Color.Gray
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.padding(vertical = 16.dp)
                     )
-                } else {
                     LazyColumn(
-                        contentPadding = PaddingValues(16.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier.fillMaxSize()
                     ) {
@@ -254,28 +272,28 @@ fun AnimatedFlagButton(
     onReadNote: (Note, Locale) -> Unit,
     note: Note
 ) {
-
-    var scale by remember { mutableStateOf(1f) }
-
-
-    LaunchedEffect(scale) {
-        scale = 1f
-    }
-
+    val scale = remember { Animatable(1f) }
+    val coroutineScope = rememberCoroutineScope()  // Recordar la corrutina para lanzar animaciones
 
     Image(
         painter = painter,
         contentDescription = contentDescription,
         modifier = Modifier
             .size(40.dp)
-            .scale(scale)
+            .scale(scale.value)
             .shadow(8.dp, CircleShape)
             .clickable {
-                scale = 0.9f
+                // Lanzar la animación al hacer clic
+                coroutineScope.launch {
+                    scale.animateTo(0.9f) // Reducir la escala
+                    scale.animateTo(1f) // Volver a la escala original
+                }
                 onReadNote(note, locale)
             }
     )
 }
+
+
 
 @Preview(showBackground = true)
 @Composable
@@ -287,7 +305,9 @@ fun NotesScreenPreview() {
                 Note("Pedido de ayuda", "¿Podrías ayudarme, por favor?")
             ),
             onAddNote = {},
-            onReadNote = { _, _ -> }
+            onReadNote = { _, _ -> },
+            loggedInUser = "Matias",
+            onLogout = {}
         )
     }
 }
