@@ -46,7 +46,11 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var textToSpeech: TextToSpeech
     private lateinit var loggedInUser: String
-    private val notesList = mutableListOf<Note>()
+    private val notesList = mutableStateListOf<Note>()
+
+    companion object {
+        private const val ADD_NOTE_REQUEST_CODE = 1
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +65,7 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             IvnComposeTheme {
                 NotesScreen(
                     notesList = notesList,
-                    onAddNote = { startActivity(Intent(this, AddNoteActivity::class.java)) },
+                    onAddNote = { startActivityForResult(Intent(this, AddNoteActivity::class.java), ADD_NOTE_REQUEST_CODE) },
                     onReadNote = { note, locale -> readNoteContent(note, locale) },
                     loggedInUser = loggedInUser,
                     onLogout = { logoutUser() }
@@ -72,24 +76,38 @@ class NotesActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         loadNotes()
     }
 
-    private fun loadNotes() {
-        notesList.apply {
-            add(Note("Saludo", "Hola, ¿cómo estás?"))
-            add(Note("Pedido de ayuda", "¿Podrías ayudarme, por favor?"))
-            add(Note("Pregunta por dirección", "¿Dónde está el baño?"))
-            add(Note("Pedido de información", "¿Puedes escribir lo que estás diciendo?"))
-            add(Note("Explicación de sordera", "Soy sordo/a, no puedo escuchar. Por favor, lee mi mensaje."))
-            add(Note("Pedido de bebida", "Me gustaría un vaso de agua, por favor."))
-            add(Note("Gracias", "Muchas gracias por tu ayuda."))
-            add(Note("Llamar la atención", "Disculpa, ¿puedes mirarme un momento?"))
-            add(Note("Comunicación alternativa", "¿Podemos comunicarnos por escrito?"))
-            add(Note("Pedido de comida", "Quisiera pedir una hamburguesa sin queso, por favor."))
-            add(Note("Confirmación", "Sí, entiendo."))
-            add(Note("Negación", "No, no necesito ayuda, gracias."))
-            add(Note("Llamada de emergencia", "Por favor, llama al 133, hay una emergencia."))
-            add(Note("Despedida", "Adiós, que tengas un buen día."))
-            add(Note("Pregunta por tiempo", "¿Qué hora es?"))
+    // Método para recibir la nota nueva desde AddNoteActivity
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ADD_NOTE_REQUEST_CODE && resultCode == RESULT_OK) {
+            val title = data?.getStringExtra("noteTitle") ?: ""
+            val content = data?.getStringExtra("noteContent") ?: ""
+            if (title.isNotEmpty() && content.isNotEmpty()) {
+                notesList.add(Note(title, content))
+            }
         }
+    }
+
+    private fun loadNotes() {
+        notesList.addAll(
+            listOf(
+                Note("Saludo", "Hola, ¿cómo estás?"),
+                Note("Pedido de ayuda", "¿Podrías ayudarme, por favor?"),
+                Note("Pregunta por dirección", "¿Dónde está el baño?"),
+                Note("Pedido de información", "¿Puedes escribir lo que estás diciendo?"),
+                Note("Explicación de sordera", "Soy sordo/a, no puedo escuchar. Por favor, lee mi mensaje."),
+                Note("Pedido de bebida", "Me gustaría un vaso de agua, por favor."),
+                Note("Gracias", "Muchas gracias por tu ayuda."),
+                Note("Llamar la atención", "Disculpa, ¿puedes mirarme un momento?"),
+                Note("Comunicación alternativa", "¿Podemos comunicarnos por escrito?"),
+                Note("Pedido de comida", "Quisiera pedir una hamburguesa sin queso, por favor."),
+                Note("Confirmación", "Sí, entiendo."),
+                Note("Negación", "No, no necesito ayuda, gracias."),
+                Note("Llamada de emergencia", "Por favor, llama al 133, hay una emergencia."),
+                Note("Despedida", "Adiós, que tengas un buen día."),
+                Note("Pregunta por tiempo", "¿Qué hora es?")
+            )
+        )
     }
 
     private fun logoutUser() {
@@ -184,8 +202,8 @@ fun NotesScreen(
                 contentColor = Color.White,
                 containerColor = Color(0xFF009688),
                 modifier = Modifier
-                    .size(100.dp)
-                    .padding(16.dp)
+                    .size(130.dp)
+                    .padding(32.dp)
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
             }
@@ -273,7 +291,7 @@ fun AnimatedFlagButton(
     note: Note
 ) {
     val scale = remember { Animatable(1f) }
-    val coroutineScope = rememberCoroutineScope()  // Recordar la corrutina para lanzar animaciones
+    val coroutineScope = rememberCoroutineScope()
 
     Image(
         painter = painter,
@@ -283,7 +301,6 @@ fun AnimatedFlagButton(
             .scale(scale.value)
             .shadow(8.dp, CircleShape)
             .clickable {
-                // Lanzar la animación al hacer clic
                 coroutineScope.launch {
                     scale.animateTo(0.9f) // Reducir la escala
                     scale.animateTo(1f) // Volver a la escala original
@@ -292,8 +309,6 @@ fun AnimatedFlagButton(
             }
     )
 }
-
-
 
 @Preview(showBackground = true)
 @Composable
